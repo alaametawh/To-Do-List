@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="">
+    <title>To-Do List</title>
+</head>
+<body>
+    <div class="container">
+        <div class="title">📝 To-Do List</div>
+        <div id="input">
+            <div class="taskarea">
+                <input type="text" id="task" placeholder="What is in your mind...">
+            </div>
+
+            <div class="custom">
+                <div class="menu">
+                    <p>Priority: </p>
+                    <select id="priority">
+                        <option value="low">Low</option>
+                        <option value="mid">Midum</option>
+                        <option value="high">High</option>
+                    </select>
+
+                    <p>Bg Color: </p>
+                    <input type="color" id="color" value="#ffffff">
+
+                    <p>Text Color: </p>
+                    <input type="color" id="color" value="#000000">
+                </div>
+                
+                
+            </div>
+
+            <div class="btn"><button id="add">ADD</button></div>
+        </div>
+        <div class="progress"><progress max="100" value="0"></progress></div>
+        <div id="list">
+            <div class="todo"></div>
+        </div>
+    </div>
+    <script>
+    </script>
+</body>
+</html>

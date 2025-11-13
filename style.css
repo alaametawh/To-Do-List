@@ -1,0 +1,105 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2A1E5C;
+}
+.container {
+    width: 90%;
+    height: 100vh;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    background-color: #347FC4;
+}
+.title {
+    font-size: 45px;
+    font-weight: bold;
+    color: #F8F7FF;
+}
+#input {
+    width: 90%;
+    border:solid 5px;
+    border-radius: 15px;
+    margin: 20px 0;
+}
+.taskarea{
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+#task {
+    width: 90%;
+    font-size: 26px;
+    height: 50px;
+    border-radius: 15px;
+    padding: 10px 15px;
+    box-shadow: 10px 10px 10px #F8F7FF;
+    background-color: #2A1E5C;
+    color: #F8F7FF;
+}
+.custom {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    color: #F8F7FF;
+    font-weight: bold;
+}
+.menu {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+select {
+    padding: 10px 20px;
+    border-radius:15px;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+input[type="color"] {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    height: 50px;
+}
+p {font-size: 26px; margin: 0 15px;}
+.btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#add {
+    margin: 15px 0;
+    padding: 10px 45px;
+    border-radius: 15px;
+}
+progress {
+    width: 70vw;
+    height: 50px;
+}
+#list {
+    border: #2A1E5C 3px solid;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+.todo {
+    width: 100%;
+    height: 50px;
+}
+@media (max-width: 800px) {
+    .menu {flex-direction: column; justify-content: center; align-items: center;}
+    .custom {width: 100%;}
+}
