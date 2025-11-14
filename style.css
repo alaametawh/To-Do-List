@@ -8,33 +8,33 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #2A1E5C;
+    background-color: #23C892;
+}
+@font-face {
+    font-family: "text";
+    src: url(fonts/Story_Script/StoryScript-Regular.ttf);
 }
 .container {
     width: 90%;
     height: 100vh;
-    min-width: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    background-color: #347FC4;
+    background-color: #F8F7FF;
 }
 .title {
     font-size: 45px;
     font-weight: bold;
-    color: #F8F7FF;
 }
 #input {
     width: 90%;
-    border:solid 5px;
     border-radius: 15px;
     margin: 20px 0;
 }
 .taskarea{
     margin: 15px 0;
     display: flex;
-    justify-content: center;
 }
 #task {
     width: 90%;
@@ -42,64 +42,77 @@ body {
     height: 50px;
     border-radius: 15px;
     padding: 10px 15px;
-    box-shadow: 10px 10px 10px #F8F7FF;
-    background-color: #2A1E5C;
-    color: #F8F7FF;
-}
-.custom {
-    width: 90%;
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
-    color: #F8F7FF;
-    font-weight: bold;
-}
+    margin: 0 0 0 2vw;
+    flex: 4;
+    min-width: 0;
+    font-family: "text";
+}  
+#task:hover {box-shadow: 10px 10px 10px #23C892;}
 .menu {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex: 1;
+    min-width: 0;
 }
 select {
     padding: 10px 20px;
     border-radius:15px;
     font-weight: bold;
     cursor: pointer;
-
+    background-color: #DC143C;
+    font-family: "text";
+    font-size: 20px;
 }
-input[type="color"] {
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
-    height: 50px;
-}
-p {font-size: 26px; margin: 0 15px;}
+select:hover {background-color: #F8F7FF; color: #2A1E5C;}
 .btn {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-#add {
-    margin: 15px 0;
-    padding: 10px 45px;
-    border-radius: 15px;
+#add,#sort {
+    margin: 15px 15px 15px 0;
+    padding: 15px 45px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 20px;
 }
+#add:hover,#sort:hover {background-color: #23C892; color: #F8F7FF;}
 progress {
     width: 70vw;
     height: 50px;
+    accent-color:#23C892;
 }
 #list {
-    border: #2A1E5C 3px solid;
+    /* border: #2A1E5C 3px solid; */
     width: 90%;
     display: flex;
     flex-direction: column;
+    /* gap: 15px; */
+    height: 600px;
+    overflow: auto;
 }
 .todo {
     width: 100%;
-    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: #2A1E5C solid 2px;
+    gap: 1vw;
+    border-radius: 50px;
 }
+.todo > input[type="checkbox"] {width: 20px; height: 20px; margin: 0 2vw 0 0;}
+.todo > p {flex: 1; font-size: 26px; font-family: "text";}
+.todo > button {border-radius: 50%; width: 50px; height: 50px;}
+.todo > button:hover {background-color: #ff4545; fill: #F8F7FF;}
+
 @media (max-width: 800px) {
     .menu {flex-direction: column; justify-content: center; align-items: center;}
     .custom {width: 100%;}
+    .taskarea {flex-direction: column; gap: 20px;}
+}
+@media (max-width: 400px) {
+    .todo {gap: 3vw;}
 }
