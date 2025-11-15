@@ -64,12 +64,12 @@ select {
     border-radius:15px;
     font-weight: bold;
     cursor: pointer;
-    background-color: #DC143C;
+    background-color: #F8F7FF;
     font-family: "text";
     font-size: 20px;
     transition: 0.3s ease-in;
 }
-select:hover {background-color: #F8F7FF; color: #2A1E5C; transform: scale(1.1);}
+select:hover {background-color: #23C892; color: #2A1E5C; transform: scale(1.1);}
 .btn {
     width: 100%;
     display: flex;
