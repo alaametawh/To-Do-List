@@ -24,63 +24,72 @@
             </div>
             <div class="btn"><button id="add">ADD</button><button id="sort">SORT</button></div>
         </div>
-        <div class="progress"><progress id="progress" max="0" value="0"></progress><button id="deleteAll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg></button></div>
+        <div class="progress"><progress id="progress" max="0" value="0"></progress><button id="deleteAll"></button></div>
         <div id="list">
         </div>
     </div>
     <script>
-        let taskList = document.querySelector("#list")
-        let task = document.querySelector("#task")
-        let priority = document.getElementById("priority")
-        let addBtn = document.querySelector("#add")
-        let sortBtn = document.querySelector("#sort")
-        let progressBar = document.querySelector("#progress")
-        let clear = document.querySelector("#deleteAll")
+        // getting elements
+        const taskList = document.querySelector("#list")
+        const task = document.querySelector("#task")
+        const priority = document.getElementById("priority")
+        const addBtn = document.querySelector("#add")
+        const sortBtn = document.querySelector("#sort")
+        const progressBar = document.querySelector("#progress")
+        const clear = document.querySelector("#deleteAll")
+        const colors = ["#4caf50","#f4d03f","#e74c3c"]
+        const btnSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg>`;
+        clear.innerHTML = btnSvg
+        // local storage call
         let vault = JSON.parse(localStorage.getItem("tasks") || "[]")
+        // maintain order after refresh
         let id = vault.length ? Math.max(...vault.map(t => t.ID)) + 1 : 0;
         vault.forEach(item => {createTask(taskList,item.taskName,item.taskPriority,item.ID,item.taskDone)})
         progressBar.max = document.querySelectorAll(".todo").length
         progressBar.value = document.querySelectorAll(".todo input:checked").length
-
+        // main function (adding tasks)
         function createTask (parent,inputbar,priority,ID,done=false){
-            const colors = ["#4caf50","#f4d03f","#e74c3c"]
-            const btnSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg>`;
+            // creating the elements and setting its classes and values
             let cont = document.createElement("div")
             cont.classList.add("todo")
             cont.setAttribute("prio",priority)
             cont.setAttribute("ID",ID)
-            let checkTask = document.createElement("input")
-            checkTask.type = "checkbox"
-            done = done === true || done === "true";
-            checkTask.checked = done
+            cont.style.backgroundColor = colors[priority];
             let givenTask = document.createElement("p")
             let deleteTask = document.createElement("button")
             deleteTask.classList.add("delete")
             deleteTask.innerHTML = btnSvg
-            cont.style.backgroundColor = colors[priority];
+            let checkTask = document.createElement("input")
+            checkTask.type = "checkbox"
+            done = done === true || done === "true";
+            checkTask.checked = done
             if (typeof(inputbar) === "string") {
                 givenTask.textContent = inputbar
             } else {givenTask.textContent = inputbar.value; inputbar.value = ""}
-            cont.append(checkTask,givenTask,deleteTask)
-            parent.appendChild(cont)
+            if (done) {givenTask.style.textDecoration = "line-through";}
+            // delete animation listner and remove task
+            cont.addEventListener("transitionend", () => {
+                cont.remove()
+                progressBar.max = document.querySelectorAll(".todo").length
+                progressBar.value = document.querySelectorAll(".todo input:checked").length
+            },{once:true});
+            // add the deleted class to start the animation
             deleteTask.addEventListener("click", ()=> {
                 cont.classList.add("deleted")
                 removeFromVault(givenTask.textContent,cont.getAttribute("ID"))
             })
-            cont.addEventListener("transitionend", () => {
-                cont.remove()
-                progressBar.max = document.querySelectorAll(".todo").length
-                    progressBar.value = document.querySelectorAll(".todo input:checked").length
-                },{once:true});
-            if (done) {givenTask.style.textDecoration = "line-through";}
+            // apply strike through when box is checked and remove when not checked
             checkTask.addEventListener("change",()=>{
                 if (checkTask.checked) {givenTask.style.textDecoration = "line-through";}
                 else {givenTask.style.textDecoration = "none";}
                 progressBar.value = document.querySelectorAll(".todo input:checked").length
                 updateVault(givenTask.textContent,checkTask.checked,cont.getAttribute("ID"))
             })
+            // adding everything togther
+            cont.append(checkTask,givenTask,deleteTask)
+            parent.appendChild(cont)
         }
-
+        // sort function for the button
         function sortTasks (taskList) {
             let tasks = Array.from(document.querySelectorAll(".todo"))
             tasks.sort((a,b)=> Number(b.getAttribute("prio")) - Number(a.getAttribute("prio")))
@@ -88,7 +97,7 @@
             vault.sort((a, b) => b.taskPriority - a.taskPriority);
             localStorage.setItem("tasks", JSON.stringify(vault));
         }
-
+        //  listner for adding tasks
         addBtn.addEventListener("click", () => {
             if (task.value.trim() !== "") {
                 if (priority.value === "placeholder") priority.value = 0;
@@ -97,31 +106,42 @@
                 createTask(taskList, task, parseInt(priority.value),id);
                 progressBar.max = document.querySelectorAll(".todo").length
                 priority.value = "placeholder"
-                priority.style.backgroundColor = "#DC143C"
+                priority.style.backgroundColor = "#F8F7FF"
                 task.focus();
                 addToVault(taskname,taskprio,false,id)
                 id+=1
-            }})
-        
+        }})
+        // listner for sorting tasks
         sortBtn.addEventListener("click",() => {
             if (taskList) {sortTasks(taskList)}
         })
-        priority.addEventListener("change", () => {priority.style.backgroundColor = ["#4caf50","#f4d03f","#e74c3c"][priority.value]})
-        document.addEventListener("keypress", (e) => {if (e.key==="Enter") addBtn.dispatchEvent(new Event("click"))})
-        document.addEventListener("keypress", (e) => {if (e.key.length === 1) task.focus()})
+        // listner to change task background based on priority
+        priority.addEventListener("change", () => {
+            priority.style.backgroundColor = ["#4caf50","#f4d03f","#e74c3c"][priority.value]
+        })
+        // listner to allow user to write in the input with clicking buttons and submit with enter
+        document.addEventListener("keypress", (e) => {
+            if (e.key==="Enter") addBtn.dispatchEvent(new Event("click"));
+            else if (e.key.length === 1) task.focus();
+        })
+        // listner for delete all button
         clear.addEventListener("click",() => {
             let tasks = Array.from(document.querySelectorAll(".todo"))
             tasks.forEach(item => item.classList.add("deleted"))
             localStorage.setItem("tasks",JSON.stringify([]))
         })
+        // functions for managing local storage
+        // add the task to local storage
         function addToVault(taskContent,priority,done,id) {
             vault.push({ID:id,taskName:taskContent, taskPriority:priority, taskDone:done})
             localStorage.setItem("tasks",JSON.stringify(vault))
         }
+        // update task in local storage (mark done for strike through)
         function updateVault(taskContent,done,id) {
             vault.forEach(item => {if(item.taskName === taskContent && item.ID == id) item.taskDone = done})
             localStorage.setItem("tasks",JSON.stringify(vault))
         }
+        // remove task from local storage
         function removeFromVault(taskContent,id) {
             vault = vault.filter(item => !(item.taskName === taskContent && item.ID == id))
             localStorage.setItem("tasks",JSON.stringify(vault))
