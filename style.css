@@ -151,6 +151,7 @@ progress {
     .custom {width: 100%;}
     .taskarea {flex-direction: column; gap: 20px;}
 }
-@media (max-width: 400px) {
+@media (max-width: 500px) {
     .todo {gap: 3vw;}
+    .empty {font-size: 20px;}
 }
