@@ -47,10 +47,10 @@ body {
     flex: 4;
     min-width: 0;
     font-family: "text";
-    transition: 0.6s ease-in;
+    transition: 0.3s ease-in;
     border: none;
 }  
-#task:hover,#task:focus {box-shadow: 10px 10px 10px #23C892; transform: scale(1.1); border: 2px solid;}
+#task:hover,#task:focus {box-shadow: 10px 10px 10px #23C892; transform: scale(1.01); border: 2px solid;}
 .menu {
     width: 100%;
     display: flex;
@@ -93,7 +93,6 @@ select:hover {background-color: #F8F7FF; color: #2A1E5C; transform: scale(1.1);}
     margin: 0 0 10px 0;
 }
 progress {
-    /* width: 70vw; */
     flex: 1;
     height: 50px;
     accent-color:#23C892;
@@ -123,7 +122,7 @@ progress {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-bottom: #2A1E5C solid 2px;
+    border: #2A1E5C solid 1px;
     gap: 1vw;
     border-radius: 50px;
 }
