@@ -102,7 +102,7 @@ progress {
     width: 60px;
     height: 60px;
     fill: #DC143C;
-    transition: transform 0.3s ease-in;
+    transition: transform 0.2s ease-in;
 }
 #deleteAll:hover {
     transform: scale(1.1);
@@ -136,6 +136,8 @@ progress {
     opacity: 0;
     transition:all 0.5s ease;
 }
+#deletechecked {border-radius: 50%; border: none; background-color: transparent;fill: #ff4545; transition: 0.2s ease-in;}
+#deletechecked:hover {transform: scale(1.1); fill: #2A1E5C;}
 @media (max-width: 800px) {
     .menu {flex-direction: column; justify-content: center; align-items: center;}
     .custom {width: 100%;}

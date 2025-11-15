@@ -24,7 +24,7 @@
             </div>
             <div class="btn"><button id="add">ADD</button><button id="sort">SORT</button></div>
         </div>
-        <div class="progress"><progress id="progress" max="0" value="0"></progress><button id="deleteAll"></button></div>
+        <div class="progress"><progress id="progress" max="0" value="0"></progress><button id="deleteAll"></button><button id="deletechecked"></button></div>
         <div id="list">
         </div>
     </div>
@@ -37,8 +37,11 @@
         const sortBtn = document.querySelector("#sort")
         const progressBar = document.querySelector("#progress")
         const clear = document.querySelector("#deleteAll")
+        const clearCompleted = document.querySelector("#deletechecked")
         const colors = ["#4caf50","#f4d03f","#e74c3c"]
         const btnSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg>`;
+        const btnSvg2 = '<svg height="60px" width="60px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g><g><g><path d="M437.016,74.984c-99.979-99.979-262.075-99.979-362.033,0.002c-99.978,99.978-99.978,262.073,0.004,362.031 c99.954,99.978,262.05,99.978,362.029-0.002C536.995,337.059,536.995,174.964,437.016,74.984z M406.848,406.844 c-83.318,83.318-218.396,83.318-301.691,0.004c-83.318-83.299-83.318-218.377-0.002-301.693 c83.297-83.317,218.375-83.317,301.691,0S490.162,323.549,406.848,406.844z"/><path d="M361.592,150.408c-8.331-8.331-21.839-8.331-30.17,0l-75.425,75.425l-75.425-75.425c-8.331-8.331-21.839-8.331-30.17,0 s-8.331,21.839,0,30.17l75.425,75.425L150.43,331.4c-8.331,8.331-8.331,21.839,0,30.17c8.331,8.331,21.839,8.331,30.17,0 l75.397-75.397l75.419,75.419c8.331,8.331,21.839,8.331,30.17,0c8.331-8.331,8.331-21.839,0-30.17l-75.419-75.419l75.425-75.425 C369.923,172.247,369.923,158.74,361.592,150.408z"/></g></g></g></svg>'
+        clearCompleted.innerHTML = btnSvg2
         clear.innerHTML = btnSvg
         // local storage call
         let vault = JSON.parse(localStorage.getItem("tasks") || "[]")
@@ -54,6 +57,7 @@
             cont.classList.add("todo")
             cont.setAttribute("prio",priority)
             cont.setAttribute("ID",ID)
+            cont.setAttribute("completed",false)
             cont.style.backgroundColor = colors[priority];
             let givenTask = document.createElement("p")
             let deleteTask = document.createElement("button")
@@ -66,22 +70,22 @@
             if (typeof(inputbar) === "string") {
                 givenTask.textContent = inputbar
             } else {givenTask.textContent = inputbar.value; inputbar.value = ""}
-            if (done) {givenTask.style.textDecoration = "line-through";}
+            if (done) {givenTask.style.textDecoration = "line-through";cont.setAttribute("completed",true)}
             // delete animation listner and remove task
             cont.addEventListener("transitionend", () => {
                 cont.remove()
                 progressBar.max = document.querySelectorAll(".todo").length
                 progressBar.value = document.querySelectorAll(".todo input:checked").length
+                removeFromVault(givenTask.textContent,cont.getAttribute("ID"))
             },{once:true});
             // add the deleted class to start the animation
             deleteTask.addEventListener("click", ()=> {
                 cont.classList.add("deleted")
-                removeFromVault(givenTask.textContent,cont.getAttribute("ID"))
             })
             // apply strike through when box is checked and remove when not checked
             checkTask.addEventListener("change",()=>{
-                if (checkTask.checked) {givenTask.style.textDecoration = "line-through";}
-                else {givenTask.style.textDecoration = "none";}
+                if (checkTask.checked) {givenTask.style.textDecoration = "line-through";cont.setAttribute("completed",true)}
+                else {givenTask.style.textDecoration = "none";cont.setAttribute("completed",false)}
                 progressBar.value = document.querySelectorAll(".todo input:checked").length
                 updateVault(givenTask.textContent,checkTask.checked,cont.getAttribute("ID"))
             })
@@ -129,6 +133,11 @@
             let tasks = Array.from(document.querySelectorAll(".todo"))
             tasks.forEach(item => item.classList.add("deleted"))
             localStorage.setItem("tasks",JSON.stringify([]))
+        })
+        // listner to removed completed tasks
+        clearCompleted.addEventListener("click",() => {
+            let tasks = Array.from(document.querySelectorAll(".todo"))
+            tasks.forEach(item => {if(item.getAttribute("completed") === "true"){item.classList.add("deleted")}})
         })
         // functions for managing local storage
         // add the task to local storage
