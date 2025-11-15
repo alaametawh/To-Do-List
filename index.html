@@ -161,12 +161,15 @@
         // listner for delete all button
         clear.addEventListener("click",() => {
             let tasks = Array.from(document.querySelectorAll(".todo"))
+            if (document.querySelectorAll(".todo").length > 0) {
+                soundEffect.pause()
+                soundEffect.currentTime = 0
+                soundEffect.play()
+            }
             tasks.forEach(item => item.classList.add("deleted"))
             localStorage.setItem("tasks",JSON.stringify([]))
             checkEmpty()
-            soundEffect.pause()
-            soundEffect.currentTime = 0
-            soundEffect.play()
+            
         })
         // listner to removed completed tasks
         clearCompleted.addEventListener("click",() => {
