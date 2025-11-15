@@ -25,7 +25,7 @@
 
             <div class="btn"><button id="add">ADD</button><button id="sort">SORT</button></div>
         </div>
-        <div class="progress"><progress id="progress" max="0" value="0"></progress></div>
+        <div class="progress"><progress id="progress" max="0" value="0"></progress><button id="deleteAll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg></button></div>
         <div id="list">
         </div>
     </div>
@@ -37,6 +37,7 @@
         let addBtn = document.querySelector("#add")
         let sortBtn = document.querySelector("#sort")
         let progressBar = document.querySelector("#progress")
+        let clear = document.querySelector("#deleteAll")
         function createTask (parent,inputbar,priority){
             const colors = ["#4caf50","#f4d03f","#e74c3c"]
             const btnSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg>`;
@@ -55,10 +56,13 @@
             cont.append(checkTask,givenTask,deleteTask)
             parent.appendChild(cont)
             deleteTask.addEventListener("click", ()=> {
-                cont.remove()
-                progressBar.max = document.querySelectorAll(".todo").length
-                progressBar.value = document.querySelectorAll(".todo input:checked").length
+                cont.classList.add("deleted")
             })
+            cont.addEventListener("transitionend", () => {
+                    cont.remove()
+                    progressBar.max = document.querySelectorAll(".todo").length
+                    progressBar.value = document.querySelectorAll(".todo input:checked").length
+                },{once:true});
             checkTask.addEventListener("change",()=>{
                 if (checkTask.checked) {givenTask.style.textDecoration = "line-through";}
                 else {givenTask.style.textDecoration = "none";}
@@ -82,6 +86,12 @@
             if (taskList) {sortTasks(taskList)}
         })
         priority.addEventListener("change", () => {priority.style.backgroundColor = ["#4caf50","#f4d03f","#e74c3c"][priority.value]})
+        document.addEventListener("keypress", (e) => {if (e.key==="Enter") addBtn.dispatchEvent(new Event("click"))})
+        document.addEventListener("keypress", (e) => {if (e.key.length === 1) task.focus()})
+        clear.addEventListener("click",() => {
+            let tasks = Array.from(document.querySelectorAll(".todo"))
+            tasks.forEach(item => item.classList.add("deleted"))
+        })
     </script>
 </body>
 </html>
