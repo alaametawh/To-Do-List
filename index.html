@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="title">📝 To-Do List</div>
+        <div class="title">📝 To-Do List <button id="mute"></button></div>
         <div id="input">
             <div class="taskarea">
                 <input type="text" id="task" placeholder="➕ Add Task">
@@ -26,10 +26,13 @@
         </div>
         <div class="progress"><progress id="progress" max="0" value="0"></progress><button id="deleteAll"></button><button id="deletechecked"></button></div>
         <div id="list">
+            <p class="empty">No tasks yet. Add one 👇✨</p>
         </div>
     </div>
     <script>
         // getting elements
+        const soundEffect = new Audio("delete.mp3")
+        const soundEffect2 = new Audio("add.mp3")
         const taskList = document.querySelector("#list")
         const task = document.querySelector("#task")
         const priority = document.getElementById("priority")
@@ -38,18 +41,26 @@
         const progressBar = document.querySelector("#progress")
         const clear = document.querySelector("#deleteAll")
         const clearCompleted = document.querySelector("#deletechecked")
+        const emptylist = document.querySelector("p.empty")
+        const muteBtn = document.querySelector("#mute")
         const colors = ["#4caf50","#f4d03f","#e74c3c"]
         const btnSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M 10 2 L 9 3 L 3 3 L 3 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"/></svg>`;
         const btnSvg2 = '<svg height="60px" width="60px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g><g><g><path d="M437.016,74.984c-99.979-99.979-262.075-99.979-362.033,0.002c-99.978,99.978-99.978,262.073,0.004,362.031 c99.954,99.978,262.05,99.978,362.029-0.002C536.995,337.059,536.995,174.964,437.016,74.984z M406.848,406.844 c-83.318,83.318-218.396,83.318-301.691,0.004c-83.318-83.299-83.318-218.377-0.002-301.693 c83.297-83.317,218.375-83.317,301.691,0S490.162,323.549,406.848,406.844z"/><path d="M361.592,150.408c-8.331-8.331-21.839-8.331-30.17,0l-75.425,75.425l-75.425-75.425c-8.331-8.331-21.839-8.331-30.17,0 s-8.331,21.839,0,30.17l75.425,75.425L150.43,331.4c-8.331,8.331-8.331,21.839,0,30.17c8.331,8.331,21.839,8.331,30.17,0 l75.397-75.397l75.419,75.419c8.331,8.331,21.839,8.331,30.17,0c8.331-8.331,8.331-21.839,0-30.17l-75.419-75.419l75.425-75.425 C369.923,172.247,369.923,158.74,361.592,150.408z"/></g></g></g></svg>'
+        const btnSvg3 = '<svg height="30px" width="30px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 319.748 319.748" xml:space="preserve"><g id="XMLID_783_"><path id="XMLID_784_" d="M192.078,26.649c-4.878-2.61-10.795-2.324-15.398,0.744L90.458,84.874H15c-8.284,0-15,6.716-15,15v120 c0,8.284,6.716,15,15,15h75.458l86.221,57.481c2.51,1.673,5.411,2.519,8.321,2.519c2.426,0,4.859-0.588,7.077-1.775 c4.878-2.61,7.922-7.693,7.922-13.225v-240C200,34.342,196.955,29.259,192.078,26.649z M170,251.846l-66.68-44.453 c-2.464-1.643-5.359-2.519-8.32-2.519H30v-90h65c2.961,0,5.856-0.877,8.32-2.519L170,67.902V251.846z"/><path id="XMLID_787_" d="M301.212,159.873l14.142-14.142c5.858-5.858,5.858-15.355,0-21.213c-5.857-5.858-15.355-5.858-21.213,0 l-14.142,14.142l-14.142-14.142c-5.857-5.858-15.356-5.858-21.213,0c-5.858,5.858-5.858,15.355,0,21.213l14.142,14.142 l-14.142,14.142c-5.858,5.858-5.858,15.355,0,21.213c2.929,2.929,6.768,4.393,10.607,4.393c3.839,0,7.678-1.464,10.606-4.393 l14.142-14.142l14.142,14.142c2.929,2.929,6.768,4.393,10.606,4.393c3.839,0,7.678-1.464,10.606-4.393 c5.858-5.858,5.858-15.355,0-21.213L301.212,159.873z"/></g></svg>'
         clearCompleted.innerHTML = btnSvg2
         clear.innerHTML = btnSvg
+        muteBtn.innerHTML = btnSvg3
         // local storage call
         let vault = JSON.parse(localStorage.getItem("tasks") || "[]")
+        let isMuted = JSON.parse(localStorage.getItem("IsMuted") || "false");
         // maintain order after refresh
+        soundEffect.muted = isMuted
+        soundEffect2.muted = isMuted
         let id = vault.length ? Math.max(...vault.map(t => t.ID)) + 1 : 0;
         vault.forEach(item => {createTask(taskList,item.taskName,item.taskPriority,item.ID,item.taskDone)})
         progressBar.max = document.querySelectorAll(".todo").length
         progressBar.value = document.querySelectorAll(".todo input:checked").length
+        checkEmpty()
         // main function (adding tasks)
         function createTask (parent,inputbar,priority,ID,done=false){
             // creating the elements and setting its classes and values
@@ -77,10 +88,14 @@
                 progressBar.max = document.querySelectorAll(".todo").length
                 progressBar.value = document.querySelectorAll(".todo input:checked").length
                 removeFromVault(givenTask.textContent,cont.getAttribute("ID"))
+                checkEmpty()
             },{once:true});
             // add the deleted class to start the animation
             deleteTask.addEventListener("click", ()=> {
                 cont.classList.add("deleted")
+                soundEffect.pause()
+                soundEffect.currentTime = 0
+                soundEffect.play()
             })
             // apply strike through when box is checked and remove when not checked
             checkTask.addEventListener("change",()=>{
@@ -101,6 +116,17 @@
             vault.sort((a, b) => b.taskPriority - a.taskPriority);
             localStorage.setItem("tasks", JSON.stringify(vault));
         }
+        // mute sound
+        function muteAudtio() {
+            isMuted = !isMuted
+            soundEffect.pause()
+            soundEffect2.pause()
+            soundEffect.muted = isMuted
+            soundEffect2.muted = isMuted
+            localStorage.setItem("IsMuted", JSON.stringify(isMuted));
+        }
+        // check if task list is empty and display a message based on that
+        function checkEmpty(){if(taskList.children.length == 1){emptylist.style.display = "block"}else emptylist.style.display = "none"}
         //  listner for adding tasks
         addBtn.addEventListener("click", () => {
             if (task.value.trim() !== "") {
@@ -113,7 +139,11 @@
                 priority.style.backgroundColor = "#F8F7FF"
                 task.focus();
                 addToVault(taskname,taskprio,false,id)
+                checkEmpty()
                 id+=1
+                soundEffect2.pause()
+                soundEffect2.currentTime = 0
+                soundEffect2.play()
         }})
         // listner for sorting tasks
         sortBtn.addEventListener("click",() => {
@@ -133,12 +163,24 @@
             let tasks = Array.from(document.querySelectorAll(".todo"))
             tasks.forEach(item => item.classList.add("deleted"))
             localStorage.setItem("tasks",JSON.stringify([]))
+            checkEmpty()
+            soundEffect.pause()
+            soundEffect.currentTime = 0
+            soundEffect.play()
         })
         // listner to removed completed tasks
         clearCompleted.addEventListener("click",() => {
             let tasks = Array.from(document.querySelectorAll(".todo"))
+            if (document.querySelectorAll("input:checked").length > 0) {
+                soundEffect.pause()
+                soundEffect.currentTime = 0
+                soundEffect.play()
+            }
             tasks.forEach(item => {if(item.getAttribute("completed") === "true"){item.classList.add("deleted")}})
+            checkEmpty()
+            
         })
+        muteBtn.addEventListener("click",() => {muteAudtio()})
         // functions for managing local storage
         // add the task to local storage
         function addToVault(taskContent,priority,done,id) {

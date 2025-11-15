@@ -27,7 +27,12 @@ body {
 .title {
     font-size: 45px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
+#mute {border-radius: 50%;padding: 5px; border: none; transition: 0.5s ease-in;}
+#mute:hover {fill: #ff4545; transform: scale(1.1);transform: rotate(360deg);}
 #input {
     width: 90%;
     border-radius: 15px;
@@ -138,6 +143,9 @@ progress {
 }
 #deletechecked {border-radius: 50%; border: none; background-color: transparent;fill: #ff4545; transition: 0.2s ease-in;}
 #deletechecked:hover {transform: scale(1.1); fill: #2A1E5C;}
+
+.empty {font-size: 36px; align-self: center;display: block;transition: 0.2s ease-in;}
+.empty:hover {color: #23C892; transform: scale(1.1);}
 @media (max-width: 800px) {
     .menu {flex-direction: column; justify-content: center; align-items: center;}
     .custom {width: 100%;}
