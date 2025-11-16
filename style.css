@@ -154,7 +154,18 @@ progress {
     .taskarea {flex-direction: column; gap: 20px;}
 }
 @media (max-width: 500px) {
-    .todo {gap: 3vw;}
+    .title {font-size: 26px;}
+    #task {font-size: 20px;}
+    select {padding: 6px 15px;}
+    #add {padding: 8px 30px;font-size: 15px;}
+    #sort {padding: 8px 25px;font-size: 15px;}
+    .progress {gap: 1vw;}
+    #deleteAll {width: 35px;height: 35px;}
+    #deletechecked {width: 35px;height: 35px;}
+    #deletechecked > svg{width: 35px;height: 35px;}
+    progress {height: 20px;}
+    .todo {gap: 3vw; padding: 6px 10px;}
     .empty {font-size: 20px;}
-    .title {font-size: 24px;}
+    .todo > p {font-size: 20px;}
+    .todo > button {width: 30px; height: 30px;}
 }

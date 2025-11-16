@@ -33,6 +33,7 @@
         // getting elements
         const soundEffect = new Audio("delete.mp3")
         const soundEffect2 = new Audio("add.mp3")
+        const soundEffect3 = new Audio("taskCompleted.mp3")
         const theme = new Audio("theme.mp3")
         let isTheme = true
         theme.loop = true
@@ -106,7 +107,13 @@
             })
             // apply strike through when box is checked and remove when not checked
             checkTask.addEventListener("change",()=>{
-                if (checkTask.checked) {givenTask.style.textDecoration = "line-through";cont.setAttribute("completed",true)}
+                if (checkTask.checked) {
+                    givenTask.style.textDecoration = "line-through"
+                    cont.setAttribute("completed",true)
+                    soundEffect3.pause()
+                    soundEffect3.currentTime = 0
+                    soundEffect3.play()
+                }
                 else {givenTask.style.textDecoration = "none";cont.setAttribute("completed",false)}
                 progressBar.value = document.querySelectorAll(".todo input:checked").length
                 updateVault(givenTask.textContent,checkTask.checked,cont.getAttribute("ID"))
@@ -128,8 +135,10 @@
             isMuted = !isMuted
             soundEffect.pause()
             soundEffect2.pause()
+            soundEffect3.pause()
             soundEffect.muted = isMuted
             soundEffect2.muted = isMuted
+            soundEffect3.muted = isMuted
             localStorage.setItem("IsMuted", JSON.stringify(isMuted));
         }
         // toggle theme
